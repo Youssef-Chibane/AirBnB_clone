@@ -9,15 +9,26 @@ from datetime import datetime
 
 class BaseModel:
     """ this is the base class for all my classes"""
+
+    DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
+
     def __init__(self, *args, **kwargs):
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "__class__":
+                    continue
+                if key in ["created_at", "updated_at"]:
+                    value = datetime.strptime(value, self.DATE_FORMAT)
+                setattr(self, key, value)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         """returns the string repr of the object"""
         return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
-    
+
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.now()
