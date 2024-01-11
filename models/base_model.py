@@ -1,4 +1,4 @@
-#!/usr/bin/env pyhton3
+#!/usr/bin/python3
 
 """ this is the base for all my models"""
 
@@ -24,6 +24,7 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self):
         """returns the string repr of the object"""
@@ -32,6 +33,7 @@ class BaseModel:
     def save(self):
         """Update updated_at with the current datetime."""
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """Return the dictionary of the BaseModel instance."""
