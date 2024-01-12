@@ -1,35 +1,47 @@
 #!/usr/bin/python3
+
 """Defines the FileStorage class."""
 
 import json
 from models.base_model import BaseModel
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models.user import User
+
 
 class FileStorage:
-    
+    """ serializes instances to a JSON file and deserializes JSON"""
+
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        return FileStorage.__objects
+        """  returns the dictionary __objects """
+        return self.__objects
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
-        key = f"{obj.__class__.__name__}.{obj.id}"
+        key = obj.__class__.__name__ + "." + str(obj.id)
         self.__objects[key] = obj
 
     def save(self):
-        """Serializes __objects to the JSON file (path: __file_path)"""
-        serialized_objects = {key: obj.to_dict() for key, obj in self.__objects.items()}
-        with open(self.__file_path, 'w') as file:
-            json.dump(serialized_objects, file)
+        """serializes __objects to the JSON file (path: __file_path)"""
+        json_object = {}
+        for key in self.__objects:
+            json_object[key] = self.__objects[key].to_dict()
+        with open(self.__file_path, 'w') as f:
+            json.dump(json_object, f)
 
     def reload(self):
+        """ deserializes the JSON file to __objects """
         try:
-            with open(FileStorage.__file_path) as f:
-                objdict = json.load(f)
-                for o in objdict.values():
-                    cls_name = o["__class__"]
-                    del o["__class__"]
-                    self.new(eval(cls_name)(**o))
+            with open(self.__file_path, 'r', encoding="UTF8") as f:
+                # jlo = json.load(f)
+                for key, value in json.load(f).items():
+                    attri_value = eval(value["__class__"])(**value)
+                    self.__objects[key] = attri_value
         except FileNotFoundError:
-            return
+            pass

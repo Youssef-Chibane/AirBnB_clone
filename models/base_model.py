@@ -13,13 +13,15 @@ class BaseModel:
     DATE_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
     def __init__(self, *args, **kwargs):
+        """ Constructor """
         if kwargs:
             for key, value in kwargs.items():
-                if key == "__class__":
-                    continue
-                if key in ["created_at", "updated_at"]:
-                    value = datetime.strptime(value, self.DATE_FORMAT)
-                setattr(self, key, value)
+                if key == "created_at":
+                    value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                if key == "updated_at":
+                    value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
+                if key != "__class__":
+                    setattr(self, key, value)
         else:
             self.id = str(uuid4())
             self.created_at = datetime.now()
@@ -36,9 +38,9 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        """Return the dictionary of the BaseModel instance."""
-        obj_dict = self.__dict__.copy()
-        obj_dict['__class__'] = self.__class__.__name__
-        obj_dict['created_at'] = self.created_at.isoformat()
-        obj_dict['updated_at'] = self.updated_at.isoformat()
-        return obj_dict
+        '''returns a dictionary with all keys/value of the instance'''
+        dict_copy = self.__dict__.copy()
+        dict_copy["created_at"] = self.created_at.isoformat()
+        dict_copy["updated_at"] = self.updated_at.isoformat()
+        dict_copy['__class__'] = self.__class__.__name__
+        return dict_copy
