@@ -2,6 +2,7 @@
 
 """__init__ magic method"""
 
+
 from models.engine.file_storage import FileStorage
 
 classes = {'BaseModel': 'BaseModel', 'Amenity': 'Amenity', 'State': 'State',
