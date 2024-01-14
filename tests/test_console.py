@@ -104,5 +104,6 @@ class test_console(unittest.TestCase):
             x = (self.capt_out.getvalue())
             self.assertEqual("** class doesn't exist **\n", x)
 
+
 if __name__ == '__main__':
     unittest.main()
