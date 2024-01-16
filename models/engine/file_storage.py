@@ -36,11 +36,24 @@ class FileStorage():
             json.dump(json_object, f)
 
     def reload(self):
-        """ deserializes the JSON file to __objects """
+        """Deserializes the JSON file to __objects"""
         try:
-            with open(self.__file_path, 'r', encoding="UTF8") as f:
-                 for key, value in json.load(f).items():
-                    attri_value = eval(value["__class__"])(**value)
-                    self.__objects[key] = attri_value
-        except FileNotFoundError:
+            with open(FileStorage.__file_path, "r") as file:
+                dict_file = json.load(file)
+                for cl_id, To_obj in dict_file.items():
+                    if "BaseModel" in cl_id:
+                        FileStorage.__objects[cl_id] = BaseModel(**To_obj)
+                    elif "User" in cl_id:
+                        FileStorage.__objects[cl_id] = User(**To_obj)
+                    elif "Place" in cl_id:
+                        FileStorage.__objects[cl_id] = Place(**To_obj)
+                    elif "State" in cl_id:
+                        FileStorage.__objects[cl_id] = State(**To_obj)
+                    elif "City" in cl_id:
+                        FileStorage.__objects[cl_id] = City(**To_obj)
+                    elif "Amenity" in cl_id:
+                        FileStorage.__objects[cl_id] = Amenity(**To_obj)
+                    elif "Review" in cl_id:
+                        FileStorage.__objects[cl_id] = Review(**To_obj)
+        except Exception:
             pass
